@@ -85,8 +85,7 @@ pub struct Proposal {
   pub privacy: Privacy,
   pub frequency: Option<String>,
   pub status: ProposalStatus,
-  #[serde(deserialize_with = "deserialize_vec")]
-  pub votes: Vec<u64>,
+  pub votes: Vec<String>,
   pub pubvote: Option<String>,
   pub created: u32
 }
@@ -107,13 +106,4 @@ where
 {
   let s: String = Deserialize::deserialize(d)?;
   Ok(s.parse::<u64>().map_err(Error::custom)?)
-}
-
-pub fn deserialize_vec<'a, D>(d: D) -> Result<Vec<u64>, D::Error>
-where
-	D: serde::Deserializer<'a>,
-{
-  let s: String = Deserialize::deserialize(d)?;
-
-  Ok(s.split(',').map(|s| s.parse::<u64>().unwrap_or_default()).collect())
 }
