@@ -1,4 +1,4 @@
-use serde::{Deserialize, de::Error};
+use serde::{Deserialize, de::Error, Serialize};
 
 #[derive(Deserialize, Debug)]
 pub struct NodeList<T> {
@@ -51,8 +51,8 @@ pub enum Privacy {
   Mixed
 }
 
-#[derive(Deserialize, Debug)]
-pub enum Status {
+#[derive(Deserialize, Debug, Serialize)]
+pub enum ProposalStatus {
   Pending,
   Ongoing,
   Closed
@@ -84,7 +84,7 @@ pub struct Proposal {
   pub author: CrossChainAccount,
   pub privacy: Privacy,
   pub frequency: Option<String>,
-  pub status: Status,
+  pub status: ProposalStatus,
   #[serde(deserialize_with = "deserialize_vec")]
   pub votes: Vec<u64>,
   pub pubvote: Option<String>,

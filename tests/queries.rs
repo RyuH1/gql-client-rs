@@ -142,3 +142,49 @@ pub async fn fetches_all_projects_with_filter() {
 
   println!("data: {:?}", data);
 }
+
+#[tokio::test]
+pub async fn fetches_all_projects_with_status_filter() {
+  let mut headers = HashMap::new();
+  headers.insert("content-type", "application/json");
+
+  let client = Client::new_with_headers(ENDPOINT, headers);
+
+  let query = r#"
+    query AllProjectsQuery {
+      proposals(filter: {status: {notEqualTo: Closed}}) {
+        nodes {
+          id
+          project {
+            id
+            owner {
+              id
+              protocol
+            }
+            data
+            updated
+          }
+          proposal
+          start
+          end
+          author {
+            id
+            protocol
+          }
+          privacy
+          frequency
+          status
+          votes
+          pubvote
+          created
+        }
+      }
+    }
+  "#;
+
+  let data: AllProposals = client.query_unwrap::<AllProposals>(query).await.unwrap();
+
+  assert!(data.proposals.nodes.len() > 0 as usize);
+
+  println!("data: {:?}", data);
+}
